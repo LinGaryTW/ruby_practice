@@ -85,6 +85,12 @@ def add_depth(node_array)
   return result
 end
 
+def find_node(root, target_value)
+  return if root.nil?
+  return true if root.value == target_value
+  find_node(root.left, target_value) || find_node(root.right, target_value) || false
+end
+
 # expect with depth
 # [[5], 
 # [2, 6], 
