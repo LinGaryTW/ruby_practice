@@ -1,4 +1,4 @@
-load '01.rb'
+load './01.rb'
 p MyClass.new.a
 
 def event(desc)
