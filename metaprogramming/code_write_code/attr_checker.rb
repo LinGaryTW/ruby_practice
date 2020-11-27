@@ -1,11 +1,26 @@
 require 'test/unit'
+class Object
+  def self.attr_checked(attribute, &validation)
+    self.class_eval do
+      attr_accessor attribute
+
+      define_method("#{attribute}=") do |arg|
+        fail 'Invalid attribute' unless arg
+        fail 'Invalid attribute' unless validation.call(arg)
+        instance_variable_set("@#{attribute}", arg)
+      end
+    end
+  end
+end
 
 class Person
+  attr_checked :age do |v|
+    v >= 18
+  end
 end
 
 class TestCheckedAttribute < Test::Unit::TestCase
   def setup
-    add_checked_attribute(Person, :age) { |v| v >= 18 }
     @bob = Person.new
   end
 
@@ -32,31 +47,3 @@ class TestCheckedAttribute < Test::Unit::TestCase
     end
   end
 end
-
-def add_checked_attribute(class_name, attribute, &validation)
-  class_name.class_eval do
-    attr_accessor attribute
-
-    define_method("#{attribute}=") do |arg|
-      fail 'Invalid attribute' unless arg
-      fail 'Invalid attribute' unless validation.call(arg)
-      instance_variable_set("@#{attribute}", arg)
-    end
-  end
-end
-# module CheckedAttribute
-#   def age=()
-
-#   end  
-# end
-
-# class Person
-#   include CheckedAttribute
-#   attr_checked :age do |v|
-#     v >= 18
-#   end
-# end
-
-# me = Person.new
-# # me.age = 39
-# # me.age = 12
