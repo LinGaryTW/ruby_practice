@@ -35,7 +35,6 @@ end
 
 class Person
   include CheckedAttribute
-  
   attr_checked :age do |v|
     v >= 18
   end
